@@ -1,11 +1,12 @@
 import mysql from 'mysql2/promise';
 
 const pool = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    connectionLimit: 10
+    connectionLimit: 10, // Maximum number of connections in the pool
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'book_db',
+    connectTimeout: 10000
 });
 
 console.log('MySQL Pool created successfully');
