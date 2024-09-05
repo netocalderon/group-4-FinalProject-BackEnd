@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
@@ -10,9 +11,9 @@ import createBookTable from './models/book.js';
 // Import routes
 import userRoutes from './routes/user.js';
 import bookRoutes from './routes/book.js';
-
+import uploadRoute from './routes/upload.js';
 // Set port
-const PORT = process.env.DB_PORT || 5001
+const PORT = process.env.PORT || 5001
 
 // Construct path
 const __filename = fileURLToPath(import.meta.url);
@@ -29,6 +30,7 @@ app.use((req, res, next) => {
 
 // Middleware
 app.use(cors());
+app.use(express.json());
 
 // Parse body and cookies
 app.use(express.json());
@@ -40,11 +42,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Create tables
 createUserTable();
-createBookTable();
+createBookTable()
 
 // Use routes
-app.use('/users', userRoutes);
-app.use('/api', bookRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/books', bookRoutes);
+app.use('/api/upload', uploadRoute);
 
 // Error handling
 app.use((err, req, res, next) => {
