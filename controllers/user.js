@@ -39,24 +39,30 @@ const userControllers = {
     },
 
     login: async (req, res) => {
-        const { email, password } = req.body;
-        if (!email || !password) {
-            return res.status(400).json({ error: 'All fields are required' });
+        console.log(process.env.TOKEN_ACCESS_SECRET)
+        try {
+            const { email, password } = req.body;
+            if (!email || !password) {
+                return res.status(400).json({ error: 'All fields are required' });
+            }
+            if (!validateEmail(email)) {
+                return res.status(400).json({ error: 'Invalid email' });
+            }
+            const sql = 'SELECT * FROM users WHERE email = ?';
+            const user = await query(sql, [email]);
+            if (user.length === 0) {
+                return res.status(400).json({ error: 'No user with this email found' });
+            }
+            const isMatchedPassword = await matchPasswords(password, user[0].password);
+            if (!isMatchedPassword) {
+                return res.status(400).json({ error: 'Invalid password' });
+            }
+            const token = jwt.sign({ id: user[0].id }, process.env.TOKEN_ACCESS_SECRET, { expiresIn: '1d' });
+            res.cookie('token', token, { httpOnly: true, maxAge: 3600000 }).json({ message: 'Login successful', token, user: user[0] });
+        } catch (error) {
+            console.error('Error during login:', error);
+            res.status(500).json({ error: 'Internal server error' });
         }
-        if (!validateEmail(email)) {
-            return res.status(400).json({ error: 'Invalid email' });
-        }
-        const sql = 'SELECT * FROM users WHERE email = ?';
-        const user = await query(sql, [email]);
-        if (user.length === 0) {
-            return res.status(400).json({ error: 'No user with this email found' });
-        }
-        const isMatchedPassword = await matchPasswords(password, user[0].password);
-        if (!isMatchedPassword) {
-            return res.status(400).json({ error: 'Invalid password' });
-        }
-        const token = jwt.sign({ id: user[0].id }, process.env.TOKEN_ACCESS_SECRET, { expiresIn: '1d' });
-        res.cookie('token', token, { httpOnly: true, maxAge: 3600000 }).json({ message: 'Login successful', token, user: user[0] });
     },
 
     logout: async (req, res) => {
