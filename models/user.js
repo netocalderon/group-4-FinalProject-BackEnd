@@ -1,4 +1,5 @@
 import query from '../config/db.js';
+import hashPassword from '../utils/hashPassword.js';
 
 const createUserTable = async () => {
     const sql = `
@@ -15,7 +16,30 @@ const createUserTable = async () => {
 
     try {
         await query(sql)
-    } catch (err) { }
+
+        // create test user
+        const checkUserSql = `SELECT * FROM users WHERE email = ?`;
+        const testUserEmail = "testuser@example.com";
+        const users = await query(checkUserSql, [testUserEmail]);
+
+        if (users.length === 0) {
+            const username = "TestUser";
+            const password = await hashPassword("password123");
+            const phonenumber = "1234567890";
+
+            const insertUserSql = `
+                INSERT INTO users (username, email, password, phonenumber) 
+                VALUES (?, ?, ?, ?)
+            `;
+            await query(insertUserSql, [username, testUserEmail, password, phonenumber]);
+
+            console.error('Error creating books table:');
+        } else {
+            console.log("Test user already exists");
+        }
+    } catch (error) {
+        console.error('Error creating users table:', error);
+    }
 };
 
 export default createUserTable;
