@@ -21,6 +21,7 @@ const __dirname = dirname(__filename);
 
 // Initialize express
 const app = express();
+app.use(cookieParser());
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
@@ -30,12 +31,10 @@ app.use((req, res, next) => {
 
 // Middleware
 app.use(cors());
-app.use(express.json());
 
 // Parse body and cookies
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
 
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
