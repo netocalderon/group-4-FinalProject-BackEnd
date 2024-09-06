@@ -39,7 +39,7 @@ const userControllers = {
     },
 
     login: async (req, res) => {
-        console.log(process.env.TOKEN_ACCESS_SECRET)
+        // console.log(process.env.TOKEN_ACCESS_SECRET)
         try {
             const { email, password } = req.body;
             if (!email || !password) {
