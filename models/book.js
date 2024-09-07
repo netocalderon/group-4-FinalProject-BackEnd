@@ -32,9 +32,10 @@ const createBookTable = async () => {
 
         if (books.length === 0) {
             const books = [
-                ['https://res.cloudinary.com/dpe8wsyk8/image/upload/v1725645034/book-images/sqzvetc8slgwgadblyzz.jpg', 'Orientalism', 'George Orwell', 'Fiction', 'used', '6$', 'iplusone@gmail.com', '555-555-555', 'Antwerpen', 'pick', 'I am only on the weekends', 1],
-                ['https://res.cloudinary.com/dpe8wsyk8/image/upload/v1725645034/book-images/maww9mfmonxuf6ch9e6x.jpg', 'Orientalism', 'George Orwell', 'Fiction', 'used', '6$', 'iplusone@gmail.com', '555-555-555', 'Antwerpen', 'pick', 'I am only on the weekends', 1],
-                ['https://res.cloudinary.com/dpe8wsyk8/image/upload/v1725645033/book-images/mablp6scxaa1qrjio9yf.webp', 'Orientalism', 'George Orwell', 'Fiction', 'used', '6$', 'iplusone@gmail.com', '555-555-555', 'Antwerpen', 'pick', 'I am only on the weekends', 1],
+
+                ['https://res.cloudinary.com/dpe8wsyk8/image/upload/v1725645034/book-images/sqzvetc8slgwgadblyzz.jpg', '1984', 'George Orwell', 'Fiction', 'used', '6', 'iplusone@gmail.com', '555-555-555', 'Antwerpen', 'pickup', 'I am available only on weekends', 1],
+                ['https://res.cloudinary.com/dpe8wsyk8/image/upload/v1725645034/book-images/maww9mfmonxuf6ch9e6x.jpg', 'Orientalism', 'Edward Said', 'Non-fiction', 'used', '6', 'iplusone@gmail.com', '555-555-555', 'Antwerpen', 'pickup', 'I am available only on weekends', 1],
+                ['https://res.cloudinary.com/dpe8wsyk8/image/upload/v1725645033/book-images/mablp6scxaa1qrjio9yf.webp', 'The Secret', 'Rhonda Byrne', 'Self-help', 'used', '6', 'iplusone@gmail.com', '555-555-555', 'Antwerpen', 'pickup', 'I am available only on weekends', 1]
             ];
             const insertBookSql = `
         INSERT INTO books (image, title, author, genre, book_condition, price, email, phone, city, delivery, information, seller_id)
