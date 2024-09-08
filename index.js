@@ -1,60 +1,65 @@
+import 'dotenv/config'
 import express from 'express';
+import cors from 'cors';
 import cookieParser from 'cookie-parser';
-
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
-// import routes
-import recipeRoutes from './routes/recipe.js';
+import createUserTable from './models/user.js';
+// import createBookTable from './models/book.js';
 
-// set port
-const PORT = process.env.PORT || 5000;
+// Import routes
+import userRoutes from './routes/user.js';
+// import bookRoutes from './routes/book.js';
+// import uploadRoute from './routes/upload.js';
+// Set port
+const PORT = process.env.PORT || 5001
 
 // Construct path
 const __filename = fileURLToPath(import.meta.url);
-const PATH = dirname(__filename);
+const __dirname = dirname(__filename);
 
-// initialize express
+// Initialize express
 const app = express();
-
-// parse body and cookies
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Serve static files
-app.use(express.static(path.join(PATH, 'public')));
-
-// create tables
-// createUserTable();
-// createRecipeTable();
-
-// use routes
-// app.use(userRoutes);
-
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
-    res.header(
-        'Access-Control-Allow-Headers',
-        'Origin, X-Requested-With, Content-Type, Accept'
-    );
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     next();
 });
 
-app.use(recipeRoutes);
+// Middleware
+app.use(cors());
 
-// error
+// Parse body and cookies
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Serve static files
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Create tables
+createUserTable();
+// createBookTable()
+
+// Use routes
+app.use('/api/users', userRoutes);
+// app.use('/api/books', bookRoutes);
+// app.use('/api/upload', uploadRoute);
+
+// Error handling
 app.use((err, req, res, next) => {
     console.error(err);
     res.status(500).json({ message: 'Internal Server Error' });
 });
 
-// handle 404
+// Handle 404
 app.use('*', (req, res) => {
-    res.status(404).json({ message: 'Page is not found' });
+    res.status(404).json({ message: 'Page not found' });
 });
 
-// listen
+// Start server
 app.listen(PORT, () => {
-    console.log(`Server is up and running on port : ${PORT}`);
+    console.log(`Server is up and running on port: ${PORT}`);
 });
