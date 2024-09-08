@@ -45,8 +45,6 @@ const userControllers = {
 
     },
     login: async (req, res) => {
-        console.log(process.env.TOKEN_ACCESS_SECRET)
-        console.log("in login", req.body)
         try {
             const { email, password } = req.body;
             if (!email || !password) {
@@ -57,7 +55,6 @@ const userControllers = {
             }
             const sql = 'SELECT * FROM users WHERE email = ?';
             const user = await query(sql, [email]);
-            console.log("user", user)
             if (user.length === 0) {
                 return res.status(400).json({ error: 'No user with this email found' });
             }
@@ -65,7 +62,6 @@ const userControllers = {
             if (!isMatchedPassword) {
                 return res.status(400).json({ error: 'Invalid password' });
             }
-            console.log("match", isMatchedPassword)
             const token = jwt.sign({ id: user[0].id }, process.env.TOKEN_ACCESS_SECRET, { expiresIn: '1d' });
             res.cookie('token', token, { httpOnly: true, maxAge: 3600000 }).json({ message: 'Login successful', token, user: user[0] });
         } catch (error) {
