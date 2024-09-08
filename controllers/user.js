@@ -10,8 +10,8 @@ import query from '../config/db.js';
 const userControllers = {
 
     register: async (req, res) => {
-        const { email, password } = req.body;
-        if (!email || !password) {
+        const { username, email, password, phonenumber } = req.body;
+        if (!username || !email || !password || !phonenumber) {
             return res.status(400).json({ error: 'All fields are required' });
         }
         if (!validateEmail(email)) {
@@ -21,15 +21,22 @@ const userControllers = {
             return res.status(400).json({ error: 'Password must be between 6 to 16 characters long and contain at least one uppercase letter, one special character, and one number' });
         }
 
-        const sql = 'SELECT * FROM users WHERE email = ?';
-        const user = await query(sql, [email]);
-        if (user.length > 0) {
+        const checkEmailSql = 'SELECT * FROM users WHERE email = ?';
+        const userByEmail = await query(checkEmailSql, [email]);
+        if (userByEmail.length > 0) {
             return res.status(400).json({ error: 'Email already exists' });
         }
 
+        const checkUsernameSql = 'SELECT * FROM users WHERE username = ?';
+        const userByUsername = await query(checkUsernameSql, [username]);
+        if (userByUsername.length > 0) {
+            return res.status(400).json({ error: 'Username already exists' });
+        }
+
         const hashedPassword = await hashPassword(password);
-        const insertSql = 'INSERT INTO users (name, email, password) VALUES (?, ?, ?)';
-        const result = await query(insertSql, [name, email, hashedPassword]);
+
+        const insertSql = 'INSERT INTO users (username, email, password, phonenumber) VALUES (?, ?, ?, ?)';
+        const result = await query(insertSql, [username, email, hashedPassword, phonenumber]);
         if (result.affectedRows === 0) {
             return res.status(400).json({ error: 'Cannot add  the user' });
         } else {
@@ -37,9 +44,9 @@ const userControllers = {
         }
 
     },
-
     login: async (req, res) => {
-        // console.log(process.env.TOKEN_ACCESS_SECRET)
+        console.log(process.env.TOKEN_ACCESS_SECRET)
+        console.log("in login", req.body)
         try {
             const { email, password } = req.body;
             if (!email || !password) {
@@ -50,6 +57,7 @@ const userControllers = {
             }
             const sql = 'SELECT * FROM users WHERE email = ?';
             const user = await query(sql, [email]);
+            console.log("user", user)
             if (user.length === 0) {
                 return res.status(400).json({ error: 'No user with this email found' });
             }
@@ -57,6 +65,7 @@ const userControllers = {
             if (!isMatchedPassword) {
                 return res.status(400).json({ error: 'Invalid password' });
             }
+            console.log("match", isMatchedPassword)
             const token = jwt.sign({ id: user[0].id }, process.env.TOKEN_ACCESS_SECRET, { expiresIn: '1d' });
             res.cookie('token', token, { httpOnly: true, maxAge: 3600000 }).json({ message: 'Login successful', token, user: user[0] });
         } catch (error) {
