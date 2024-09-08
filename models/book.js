@@ -9,7 +9,7 @@ const createBookTable = async () => {
     author VARCHAR(255) NOT NULL,
     genre VARCHAR(100),
     book_condition VARCHAR(50),
-    price VARCHAR(50),
+    price numeric(10,2),
     email VARCHAR(255),
     phone VARCHAR(50),
     city VARCHAR(100),
