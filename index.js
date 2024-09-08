@@ -6,12 +6,12 @@ import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 import createUserTable from './models/user.js';
-// import createBookTable from './models/book.js';
+import createBookTable from './models/book.js';
 
 // Import routes
 import userRoutes from './routes/user.js';
-// import bookRoutes from './routes/book.js';
-// import uploadRoute from './routes/upload.js';
+import bookRoutes from './routes/book.js';
+import uploadRoute from './routes/upload.js';
 // Set port
 const PORT = process.env.PORT || 5001
 
@@ -45,8 +45,8 @@ createUserTable();
 
 // Use routes
 app.use('/api/users', userRoutes);
-// app.use('/api/books', bookRoutes);
-// app.use('/api/upload', uploadRoute);
+app.use('/api/books', bookRoutes);
+app.use('/api/upload', uploadRoute);
 
 // Error handling
 app.use((err, req, res, next) => {
