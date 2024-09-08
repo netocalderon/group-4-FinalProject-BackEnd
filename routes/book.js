@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/all', bookControllers.getAllBooks);
 router.get('/recent', bookControllers.getRecentBooks);
-router.get('/best', bookControllers.getAllBestSellerBooks);
+router.get('/best', bookControllers.getBestSellerBooks);
 
 router.post('/add', verifyToken, bookControllers.addBook);
 // router.post('/edit', verifyToken, bookControllers.editBook);
