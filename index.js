@@ -41,7 +41,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Create tables
 createUserTable();
-// createBookTable()
+createBookTable()
 
 // Use routes
 app.use('/api/users', userRoutes);
