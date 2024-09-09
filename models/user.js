@@ -16,7 +16,7 @@ const createUserTable = async () => {
 
     try {
         await query(sql)
-
+        console.log('users table created successfully');
         // create test user
         const checkUserSql = `SELECT * FROM users WHERE email = ?`;
         const testUserEmail = "testuser@example.com";
@@ -33,7 +33,8 @@ const createUserTable = async () => {
             `;
             await query(insertUserSql, [username, testUserEmail, password, phonenumber]);
 
-            console.error('Error creating books table:');
+            console.log('TestUser created successfully');
+
         } else {
             console.log("Test user already exists");
         }
