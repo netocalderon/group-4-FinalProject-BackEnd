@@ -48,6 +48,22 @@ const bookControllers = {
             res.status(500).json({ message: 'Error fetching bestseller books' });
         }
     },
+    getBookById: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const sql = `
+            SELECT books.*, users.username AS seller_name, users.email AS seller_email, users.phonenumber AS seller_phonenumber
+            FROM books
+            JOIN users ON books.seller_id = users.id
+            WHERE books.id = ?;
+        `;
+            const book = await query(sql, [id]);
+            res.status(200).json(book);
+        } catch (error) {
+            res.status(404).json({ message: 'Error fetching book' });
+        }
+    },
+
     addBook: async (req, res) => {
         console.log('User:', req.user);
         console.log('Body:', req.body);
@@ -94,8 +110,58 @@ const bookControllers = {
             res.status(500).json({ message: 'Internal server error' });
         }
     },
-}
+    editBook: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const { image, title, author, genre, book_condition, price, city, delivery, information } = req.body;
+            if (!image || !title || !author || !genre || !book_condition || !price || !city || !delivery) {
+                return res.status(400).json({ message: 'Missing required fields' });
 
+            }
+
+            if (isNaN(price) || price <= 0) {
+                return res.status(400).json({ message: 'Invalid price value' });
+            }
+
+            const sql = `
+            UPDATE books
+            SET image = ?, title = ?, author = ?, genre = ?, book_condition = ?, price = ?, city = ?, delivery = ?, information = ?
+            WHERE id = ?
+        `;
+            await query(sql, [
+                image,
+                title,
+                author,
+                genre,
+                book_condition,
+                price,
+                city,
+                delivery,
+                information,
+                id
+            ]);
+
+            res.status(200).json({ message: 'Book updated successfully' });
+        } catch (error) {
+            res.status(500).json({ message: 'Error updating book' });
+        }
+    },
+    deleteBook: async (req, res) => {
+        try {
+            const { id } = req.params;
+
+            const sql = `
+            DELETE FROM books
+            WHERE id = ?
+        `;
+            await query(sql, [id]);
+
+            res.status(200).json({ message: 'Book deleted successfully' });
+        } catch (error) {
+            res.status(500).json({ message: 'Error deleting book' });
+        }
+    }
+}
 export default bookControllers;
 
 
