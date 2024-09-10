@@ -5,8 +5,6 @@ const verifyToken = (req, res, next) => {
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return res.status(401).json({ message: 'Authorization token is missing or invalid' });
     }
-
-    // Extract the token from the Authorization header
     const token = authHeader.split(' ')[1];
     console.log("token", token)
     if (token) {
