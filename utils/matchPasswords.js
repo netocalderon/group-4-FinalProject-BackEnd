@@ -5,4 +5,3 @@ const matchPasswords = (password, rePassword) => {
 };
 
 export default matchPasswords;
-
