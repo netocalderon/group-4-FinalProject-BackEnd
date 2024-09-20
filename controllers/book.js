@@ -64,6 +64,28 @@ const bookControllers = {
         }
     },
 
+    getBookByQuery: async (req, res) => {
+        try {
+            const searchTerm = `%${req.params.q}%`;
+            console.log('Searching for:', searchTerm);
+            const sql = `
+            SELECT books.*, users.username AS seller_name, users.email AS seller_email, users.phonenumber AS seller_phonenumber
+            FROM books
+            JOIN users ON books.seller_id = users.id
+            WHERE books.title LIKE ? OR books.author LIKE ?
+        `;
+            const books = await query(sql, [searchTerm, searchTerm]);
+
+            if (books.length > 0) {
+                return res.status(200).json(books);
+            } else {
+                return res.status(200).json({ message: 'No books found' });
+            }
+        } catch (error) {
+            console.error('Error fetching books by query:', error);
+            return res.status(500).json({ message: 'Error fetching books' });
+        }
+    },
     addBook: async (req, res) => {
         console.log('User:', req.user);
         console.log('Body:', req.body);
@@ -103,7 +125,7 @@ const bookControllers = {
                 req.user.id
             ]);
 
-            // Send success response
+
             res.status(201).json({ message: 'Book added successfully' });
         } catch (error) {
             console.error('Error adding book:', error.message);  // Log error message for debugging
