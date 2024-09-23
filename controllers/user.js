@@ -10,6 +10,7 @@ import query from '../config/db.js';
 const userControllers = {
 
     register: async (req, res) => {
+        console.log(req.body)
         const { username, email, password, phonenumber } = req.body;
         if (!username || !email || !password || !phonenumber) {
             return res.status(400).json({ error: 'All fields are required' });
@@ -38,6 +39,7 @@ const userControllers = {
         const insertSql = 'INSERT INTO users (username, email, password, phonenumber) VALUES (?, ?, ?, ?)';
         const result = await query(insertSql, [username, email, hashedPassword, phonenumber]);
         if (result.affectedRows === 0) {
+            console.log("User could not be added: ", { username, email, phonenumber });
             return res.status(400).json({ error: 'Cannot add  the user' });
         } else {
             res.status(201).json({ message: 'User added successfully' });
