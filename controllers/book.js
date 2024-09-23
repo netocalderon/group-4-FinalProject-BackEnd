@@ -133,12 +133,14 @@ const bookControllers = {
         }
     },
     editBook: async (req, res) => {
+
+        console.log(req.body)
         try {
             const { id } = req.params;
-            const { image, title, author, genre, book_condition, price, city, delivery, information } = req.body;
-            if (!image || !title || !author || !genre || !book_condition || !price || !city || !delivery) {
-                return res.status(400).json({ message: 'Missing required fields' });
+            const { image, title, author, genre, book_condition, price, city, delivery, information, status } = req.body;
 
+            if (!image || !title || !author || !genre || !book_condition || !price || !city || !delivery || status === undefined) {
+                return res.status(400).json({ message: 'Missing required fields' });
             }
 
             if (isNaN(price) || price <= 0) {
@@ -146,10 +148,11 @@ const bookControllers = {
             }
 
             const sql = `
-            UPDATE books
-            SET image = ?, title = ?, author = ?, genre = ?, book_condition = ?, price = ?, city = ?, delivery = ?, information = ?
-            WHERE id = ?
+        UPDATE books
+        SET image = ?, title = ?, author = ?, genre = ?, book_condition = ?, price = ?, city = ?, delivery = ?, information = ?, status = ?
+        WHERE id = ?
         `;
+
             await query(sql, [
                 image,
                 title,
@@ -160,14 +163,17 @@ const bookControllers = {
                 city,
                 delivery,
                 information,
+                status,
                 id
             ]);
 
             res.status(200).json({ message: 'Book updated successfully' });
         } catch (error) {
+            console.error('Error updating book:', error.message);
             res.status(500).json({ message: 'Error updating book' });
         }
     },
+
     deleteBook: async (req, res) => {
         try {
             const { id } = req.params;
