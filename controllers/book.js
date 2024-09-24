@@ -124,8 +124,6 @@ const bookControllers = {
                 information,
                 req.user.id
             ]);
-
-
             res.status(201).json({ message: 'Book added successfully' });
         } catch (error) {
             console.error('Error adding book:', error.message);  // Log error message for debugging
