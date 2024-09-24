@@ -134,7 +134,6 @@ const bookControllers = {
         try {
             const { id } = req.params;
             const { image, title, author, genre, book_condition, price, city, delivery, information, status } = req.body;
-
             if (!image || !title || !author || !genre || !book_condition || !price || !city || !delivery || status === undefined) {
                 return res.status(400).json({ message: 'Missing required fields' });
             }
