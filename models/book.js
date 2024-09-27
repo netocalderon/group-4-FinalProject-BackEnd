@@ -16,7 +16,6 @@ const createBookTable = async () => {
     seller_id INT, 
     is_bestseller BOOLEAN DEFAULT FALSE,
     status BOOLEAN DEFAULT TRUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (seller_id) REFERENCES users(id) -- Foreign key relationship with users table
     );
