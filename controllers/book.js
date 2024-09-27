@@ -21,7 +21,7 @@ const bookControllers = {
             SELECT books.*, users.username AS seller_name, users.email AS seller_email, users.phonenumber AS seller_phonenumber
             FROM books 
             JOIN users  ON books.seller_id = users.id
-            ORDER BY books.created_at DESC
+            ORDER BY books.id DESC
             LIMIT 3; 
         `;
             const books = await query(sql);
@@ -38,7 +38,6 @@ const bookControllers = {
             FROM books
             JOIN users ON books.seller_id = users.id
             WHERE books.is_bestseller = 1
-            ORDER BY books.created_at DESC
             LIMIT 3;
         `;
             const books = await query(sql);
